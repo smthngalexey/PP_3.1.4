@@ -14,6 +14,9 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Component
+@NamedEntityGraph(name = "User.roles",
+        attributeNodes = @NamedAttributeNode("roles")
+)
 public class User implements UserDetails {
 
     @Id
@@ -33,7 +36,7 @@ public class User implements UserDetails {
     private int age;
 
     @ManyToMany(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
+    /*@Fetch(FetchMode.JOIN)*/
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
