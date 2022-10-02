@@ -1,5 +1,6 @@
 package kulish.webapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Component
 @NamedEntityGraph(name = "User.roles",
         attributeNodes = @NamedAttributeNode("roles")
@@ -35,8 +37,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
 
-    @ManyToMany(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
-    /*@Fetch(FetchMode.JOIN)*/
+    @ManyToMany(cascade=CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -47,8 +48,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String password, String email, int age, Set<Role> roles) {
-        this.id = id;
+    public User(String username, String password, String email, int age, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -130,6 +130,7 @@ public class User implements UserDetails {
     public void setAge(int age) {
         this.age = age;
     }
+
 
     @Override
     public String toString() {
